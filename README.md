@@ -108,4 +108,4 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for more 
 
 ---
 
-For more information and detailed guides, visit the [official documentation](https://docs.endkind.net/enderclitools).
+For more information and detailed guides, visit the [Official Documentation](https://docs.endkind.net/enderclitools).
