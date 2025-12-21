@@ -130,6 +130,22 @@ jobs:
           if (-not $bin) { $bin = $pkg.name }
           echo "BIN_NAME=$bin" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
+      - name: Sign Windows binary with Trusted Signing (exe/dll)
+        if: runner.os == 'Windows'
+        uses: azure/trusted-signing-action@v0
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: ${{ secrets.TS_ENDPOINT }}
+          trusted-signing-account-name: ${{ secrets.TS_ACCOUNT_NAME }}
+          certificate-profile-name: ${{ secrets.TS_CERT_PROFILE_NAME }}
+          files-folder: ${{ github.workspace }}\target\${{ matrix.target }}\release
+          files-folder-filter: exe,dll
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
       - name: Package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
@@ -157,6 +173,21 @@ jobs:
           cargo wix --target ${{ matrix.target }} --output dist\
           $msi = Get-ChildItem dist\*.msi | Select-Object -First 1
           echo "INSTALLER_PATH=$msi" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Sign MSI with Trusted Signing (msi)
+        if: runner.os == 'Windows'
+        uses: azure/trusted-signing-action@v0
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: ${{ secrets.TS_ENDPOINT }}
+          trusted-signing-account-name: ${{ secrets.TS_ACCOUNT_NAME }}
+          certificate-profile-name: ${{ secrets.TS_CERT_PROFILE_NAME }}
+          files: ${{ env.INSTALLER_PATH }}
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
 
       #endregion
 
