@@ -4,6 +4,7 @@ mod args;
 mod cmd;
 mod config;
 mod utils;
+mod module_system;
 
 use anyhow::Result;
 use args::Cli;
@@ -20,6 +21,12 @@ fn main() -> Result<()> {
         }
         args::Commands::Config(opts) => {
             cmd::config::run(opts)?;
+        }
+        args::Commands::Module(opts) => {
+            cmd::module::run(opts)?;
+        }
+        args::Commands::External(args) => {
+            cmd::module::run_external(args)?;
         }
     }
 
