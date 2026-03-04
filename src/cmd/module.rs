@@ -25,7 +25,12 @@ pub fn run_external(args: Vec<String>) -> Result<()> {
 }
 
 fn install(args: InstallArgs) -> Result<()> {
-    let source = infer_source(args.source, args.url, args.file, args.tag)?;
+    let source = infer_source(
+        args.source.clone(),
+        args.url.clone(),
+        args.file.clone(),
+        args.tag.clone(),
+    )?;
     let result = install_module(source, &args)?;
     println!("Installed {} {}", result.id, result.version);
     Ok(())
